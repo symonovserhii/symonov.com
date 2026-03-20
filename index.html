@@ -4,6 +4,35 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Symonov — Full-Stack Development</title>
+
+<!-- SEO Meta -->
+<meta name="description" content="Serhii & Dmytro Symonov — full-stack developers from Ukraine. WordPress plugins, Laravel platforms, Telegram Mini Apps. Open for projects.">
+<meta name="author" content="Serhii Symonov, Dmytro Symonov">
+<link rel="canonical" href="https://symonov.com/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://symonov.com/">
+<meta property="og:title" content="Symonov — Full-Stack Development">
+<meta property="og:description" content="Two brothers building WordPress plugins, Laravel platforms, and Telegram-native apps. Based in Ukraine, deployed everywhere.">
+<meta property="og:image" content="https://symonov.com/og-image.png">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Symonov">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Symonov — Full-Stack Development">
+<meta name="twitter:description" content="Two brothers building WordPress plugins, Laravel platforms, and Telegram-native apps.">
+<meta name="twitter:image" content="https://symonov.com/og-image.png">
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+<!-- Theme color -->
+<meta name="theme-color" content="#0b0f14">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -272,11 +301,37 @@
     h1 { font-size: 48px; }
     .stack-grid, .plugin-highlight, .about-grid, .contact-block { grid-template-columns: 1fr; }
     footer { flex-direction: column; gap: 16px; padding: 24px; }
-    .ticker-item { padding: 16px 20px; }
+    .ticker-row { display: grid; grid-template-columns: 1fr 1fr; }
+    .ticker-item { padding: 16px 20px; border-right: none; border-bottom: 1px solid var(--border); }
+    .ticker-item:nth-child(odd) { border-right: 1px solid var(--border); }
+    .ticker-item:nth-last-child(-n+2) { border-bottom: none; }
     .divider { margin: 0 24px; }
     .project-right { display: none; }
   }
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Symonov",
+  "url": "https://symonov.com",
+  "description": "Full-stack development studio by Serhii & Dmytro Symonov",
+  "founders": [
+    {"@type": "Person", "name": "Serhii Symonov", "url": "https://github.com/symonovserhii"},
+    {"@type": "Person", "name": "Dmytro Symonov", "url": "https://github.com/Kassaila"}
+  ],
+  "sameAs": [
+    "https://github.com/symonovserhii",
+    "https://github.com/Kassaila",
+    "https://profiles.wordpress.org/simmotorlp/"
+  ],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "email": "hi@symonov.com",
+    "contactType": "business"
+  }
+}
+</script>
 </head>
 <body>
 
