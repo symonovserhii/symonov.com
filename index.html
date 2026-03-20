@@ -301,10 +301,9 @@
     h1 { font-size: 48px; }
     .stack-grid, .plugin-highlight, .about-grid, .contact-block { grid-template-columns: 1fr; }
     footer { flex-direction: column; gap: 16px; padding: 24px; }
-    .ticker-row { display: grid; grid-template-columns: 1fr 1fr; }
+    .ticker-row { flex-direction: column; }
     .ticker-item { padding: 16px 20px; border-right: none; border-bottom: 1px solid var(--border); }
-    .ticker-item:nth-child(odd) { border-right: 1px solid var(--border); }
-    .ticker-item:nth-last-child(-n+2) { border-bottom: none; }
+    .ticker-item:last-child { border-bottom: none; }
     .divider { margin: 0 24px; }
     .project-right { display: none; }
   }
