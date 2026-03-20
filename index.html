@@ -1,13 +1,587 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Symonov Bros.</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Symonov — Full-Stack Development</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0f14;
+    --surface: #131920;
+    --border: #1e2a35;
+    --accent: #00d4ff;
+    --accent2: #7b61ff;
+    --green: #00e5a0;
+    --orange: #ff7b4f;
+    --yellow: #ffcb4f;
+    --text: #e8edf2;
+    --muted: #5a6a7a;
+    --muted2: #3a4a5a;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .glow { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; }
+  .glow-1 { width: 700px; height: 700px; background: radial-gradient(circle, rgba(0,212,255,0.06) 0%, transparent 70%); top: -250px; left: -150px; }
+  .glow-2 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(123,97,255,0.06) 0%, transparent 70%); top: 40vh; right: -150px; }
+  .glow-3 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(0,229,160,0.04) 0%, transparent 70%); bottom: 10vh; left: 10%; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 56px;
+    background: rgba(11,15,20,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(30,42,53,0.6);
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800;
+    letter-spacing: -0.02em; color: var(--text); text-decoration: none;
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a {
+    font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted);
+    text-decoration: none; letter-spacing: 0.06em; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-cta {
+    font-family: 'DM Mono', monospace; font-size: 12px; padding: 8px 18px;
+    border: 1px solid var(--border); border-radius: 4px; color: var(--accent);
+    text-decoration: none; letter-spacing: 0.06em;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .nav-cta:hover { border-color: var(--accent); background: rgba(0,212,255,0.05); }
+
+  /* HERO */
+  .hero {
+    position: relative; z-index: 1;
+    min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
+    padding: 120px 56px 80px; max-width: 1100px; margin: 0 auto;
+  }
+  .hero-eyebrow {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 32px;
+    opacity: 0; animation: fadeUp 0.7s 0.1s ease both;
+  }
+  .hero-eyebrow-line { width: 32px; height: 1px; background: var(--accent); }
+  .hero-eyebrow-text { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
+  .location-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); animation: pulse 2s infinite; }
+  .hero-location { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.08em; }
+
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(52px, 7vw, 96px);
+    font-weight: 800; line-height: 1.0; letter-spacing: -0.03em; margin-bottom: 32px;
+    opacity: 0; animation: fadeUp 0.7s 0.2s ease both;
+  }
+  h1 .outline { color: transparent; -webkit-text-stroke: 1.5px var(--text); opacity: 0.5; }
+  h1 .accent-word { color: var(--accent); }
+
+  .hero-desc {
+    font-size: 18px; line-height: 1.7; color: #7a8a9a;
+    max-width: 520px; margin-bottom: 48px;
+    opacity: 0; animation: fadeUp 0.7s 0.3s ease both;
+  }
+  .hero-actions { display: flex; align-items: center; gap: 20px; opacity: 0; animation: fadeUp 0.7s 0.4s ease both; }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent); color: #000;
+    font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 14px;
+    padding: 13px 26px; border-radius: 6px; text-decoration: none;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted);
+    text-decoration: none; letter-spacing: 0.04em; transition: color 0.2s;
+  }
+  .btn-ghost:hover { color: var(--text); }
+  .btn-ghost::after { content: '↓'; font-size: 14px; }
+
+  /* TICKER */
+  .ticker-row {
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    display: flex;
+  }
+  .ticker-item {
+    flex: 1; display: flex; align-items: center; gap: 20px;
+    padding: 20px 40px; border-right: 1px solid var(--border);
+  }
+  .ticker-item:last-child { border-right: none; }
+  .ticker-num { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 700; color: var(--accent); }
+  .ticker-label { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.4; }
+
+  /* SECTIONS */
+  section { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 96px 56px; }
+  .section-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 48px; }
+  .section-title { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; letter-spacing: -0.02em; }
+  .section-label { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; }
+  .divider { position: relative; z-index: 1; height: 1px; background: var(--border); margin: 0 56px; }
+
+  /* STACK */
+  .stack-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+  }
+  .stack-card { background: var(--surface); padding: 28px 32px; transition: background 0.2s; }
+  .stack-card:hover { background: #151e28; }
+  .stack-icon { font-size: 24px; margin-bottom: 14px; }
+  .stack-name { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .stack-desc { font-size: 13px; line-height: 1.6; color: var(--muted); }
+  .stack-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+
+  .tag {
+    font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.08em;
+    padding: 3px 8px; border-radius: 3px;
+    background: rgba(0,212,255,0.07); color: var(--accent); border: 1px solid rgba(0,212,255,0.15);
+  }
+  .tag.purple { background: rgba(123,97,255,0.07); color: var(--accent2); border-color: rgba(123,97,255,0.15); }
+  .tag.green  { background: rgba(0,229,160,0.07);  color: var(--green);   border-color: rgba(0,229,160,0.15); }
+
+  /* PROJECTS */
+  .projects-list {
+    display: flex; flex-direction: column;
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+  }
+  .project-row {
+    display: grid; grid-template-columns: 1fr auto;
+    align-items: center; gap: 32px; padding: 28px 36px;
+    background: var(--surface); text-decoration: none; color: inherit;
+  }
+  .project-row.link { cursor: pointer; transition: background 0.2s; }
+  .project-row.link:hover { background: #151e28; }
+  .project-row.link:hover .project-arrow { opacity: 1; transform: translateX(4px); }
+
+  .project-meta { display: flex; align-items: center; gap: 16px; margin-bottom: 6px; }
+  .project-name { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; }
+  .project-status {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    letter-spacing: 0.1em; padding: 3px 8px; border-radius: 3px;
+  }
+  .status-live { background: rgba(0,229,160,0.1);   color: var(--green);   border: 1px solid rgba(0,229,160,0.2); }
+  .status-beta { background: rgba(255,123,79,0.1);  color: var(--orange);  border: 1px solid rgba(255,123,79,0.2); }
+  .status-wip  { background: rgba(123,97,255,0.1);  color: var(--accent2); border: 1px solid rgba(123,97,255,0.2); }
+  .status-oss  { background: rgba(255,203,79,0.1);  color: var(--yellow);  border: 1px solid rgba(255,203,79,0.2); }
+
+  .project-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .project-right { display: flex; align-items: center; gap: 24px; }
+  .project-tech { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .project-arrow { font-size: 18px; color: var(--accent); opacity: 0; transition: opacity 0.2s, transform 0.2s; }
+
+  /* PLUGINS */
+  .plugin-highlight {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+  }
+  .plugin-card {
+    background: var(--surface); padding: 36px;
+    text-decoration: none; color: inherit; transition: background 0.2s; display: block;
+  }
+  .plugin-card:hover { background: #151e28; }
+  .plugin-card-tag {
+    font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .plugin-card-tag::before { content: ''; width: 16px; height: 1px; background: var(--muted2); }
+  .plugin-card-name { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.01em; }
+  .plugin-card-desc { font-size: 13px; line-height: 1.65; color: var(--muted); margin-bottom: 24px; }
+  .plugin-card-link { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--accent); display: flex; align-items: center; gap: 6px; transition: gap 0.2s; }
+  .plugin-card:hover .plugin-card-link { gap: 10px; }
+
+  /* ABOUT */
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+  .about-text p { font-size: 16px; line-height: 1.75; color: #8a9aaa; margin-bottom: 20px; }
+  .about-text p:last-child { margin-bottom: 0; }
+  .about-text strong { color: var(--text); font-weight: 500; }
+  .about-aside {
+    display: flex; flex-direction: column;
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+  }
+  .aside-row { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; background: var(--surface); }
+  .aside-key { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+  .aside-val { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text); }
+  .aside-val.accent { color: var(--accent); }
+  .aside-val.green  { color: var(--green); }
+
+  /* CONTACT */
+  .contact-block {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+  }
+  .contact-card { background: var(--surface); padding: 36px; display: flex; flex-direction: column; justify-content: space-between; min-height: 180px; }
+  .contact-label { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 12px; }
+  .contact-value { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: var(--text); text-decoration: none; transition: color 0.2s; }
+  a.contact-value:hover { color: var(--accent); }
+  .contact-sub { font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+  /* FOOTER */
+  footer {
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--border); padding: 28px 56px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-copy { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--text); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .fade-in.visible { opacity: 1; transform: none; }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .hero, section { padding: 80px 24px 48px; }
+    h1 { font-size: 48px; }
+    .stack-grid, .plugin-highlight, .about-grid, .contact-block { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 16px; padding: 24px; }
+    .ticker-item { padding: 16px 20px; }
+    .divider { margin: 0 24px; }
+    .project-right { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="glow glow-1"></div>
+<div class="glow glow-2"></div>
+<div class="glow glow-3"></div>
+
+<nav>
+  <a href="/" class="nav-logo">Symonov<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#stack">Stack</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#plugins">Plugins</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+  <a href="mailto:hi@symonov.com" class="nav-cta">Get in touch</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow">
+    <div class="hero-eyebrow-line"></div>
+    <div class="hero-eyebrow-text">Full-Stack Development</div>
+    <div class="location-dot"></div>
+    <div class="hero-location">Ukraine</div>
+  </div>
+  <h1>We build things<br>for the <span class="accent-word">web.</span><br><span class="outline">That actually work.</span></h1>
+  <p class="hero-desc">Serhii &amp; Dmytro Symonov — two brothers building WordPress plugins, Laravel platforms, and Telegram-native apps. Based in Ukraine, deployed everywhere.</p>
+  <div class="hero-actions">
+    <a href="#projects" class="btn-primary">View our work</a>
+    <a href="#plugins" class="btn-ghost">WordPress plugins</a>
+  </div>
+</div>
+
+<div class="ticker-row">
+  <div class="ticker-item">
+    <div class="ticker-num">4+</div>
+    <div class="ticker-label">Active<br>projects</div>
+  </div>
+  <div class="ticker-item">
+    <div class="ticker-num">2</div>
+    <div class="ticker-label">WP.org<br>plugins</div>
+  </div>
+  <div class="ticker-item">
+    <div class="ticker-num">PHP</div>
+    <div class="ticker-label">Primary<br>language</div>
+  </div>
+  <div class="ticker-item">
+    <div class="ticker-num">∞</div>
+    <div class="ticker-label">Docker<br>containers</div>
+  </div>
+</div>
+
+<section id="stack">
+  <div class="section-header fade-in">
+    <div class="section-title">Stack</div>
+    <div class="section-label">What we use</div>
+  </div>
+  <div class="stack-grid fade-in">
+    <div class="stack-card">
+      <div class="stack-icon">🐘</div>
+      <div class="stack-name">PHP / Laravel</div>
+      <div class="stack-desc">Primary backend language. Laravel for APIs and platforms, custom PHP for WordPress internals.</div>
+      <div class="stack-tags">
+        <span class="tag">Laravel</span>
+        <span class="tag">WordPress</span>
+        <span class="tag">REST API</span>
+      </div>
+    </div>
+    <div class="stack-card">
+      <div class="stack-icon">⚡</div>
+      <div class="stack-name">Vue 3 / JS</div>
+      <div class="stack-desc">Frontend layer. Vue 3 with Composition API for interactive UIs, plugins, and Telegram Mini Apps.</div>
+      <div class="stack-tags">
+        <span class="tag purple">Vue 3</span>
+        <span class="tag purple">Vite</span>
+        <span class="tag purple">TMA</span>
+      </div>
+    </div>
+    <div class="stack-card">
+      <div class="stack-icon">🐳</div>
+      <div class="stack-name">Docker / Infra</div>
+      <div class="stack-desc">All projects run on Docker Compose. Traefik, Cloudflare, GitHub Actions CI/CD.</div>
+      <div class="stack-tags">
+        <span class="tag green">Docker</span>
+        <span class="tag green">Traefik</span>
+        <span class="tag green">GitHub Actions</span>
+      </div>
+    </div>
+    <div class="stack-card">
+      <div class="stack-icon">🗄️</div>
+      <div class="stack-name">MySQL / Redis</div>
+      <div class="stack-desc">MySQL for persistence, Redis for caching and queues. Optimized for high-throughput WP installs.</div>
+      <div class="stack-tags">
+        <span class="tag">MySQL</span>
+        <span class="tag">Redis</span>
+        <span class="tag">Nginx</span>
+      </div>
+    </div>
+    <div class="stack-card">
+      <div class="stack-icon">🤖</div>
+      <div class="stack-name">AI Integration</div>
+      <div class="stack-desc">OpenAI API for translation automation, AI-assisted content generation and workflow tooling.</div>
+      <div class="stack-tags">
+        <span class="tag purple">OpenAI</span>
+        <span class="tag purple">Claude API</span>
+      </div>
+    </div>
+    <div class="stack-card">
+      <div class="stack-icon">📱</div>
+      <div class="stack-name">Telegram / TMA</div>
+      <div class="stack-desc">Telegram Mini Apps with Vue 3. Native mobile-first UX without building a native app.</div>
+      <div class="stack-tags">
+        <span class="tag green">Bot API</span>
+        <span class="tag green">Mini Apps</span>
+        <span class="tag green">Vant 4</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="projects">
+  <div class="section-header fade-in">
+    <div class="section-title">Projects</div>
+    <div class="section-label">What we build</div>
+  </div>
+  <div class="projects-list fade-in">
+
+    <div class="project-row link" onclick="window.open('https://github.com/Kassaila/vue-router-citadel','_blank')">
+      <div>
+        <div class="project-meta">
+          <span class="project-name">vue-router-citadel</span>
+          <span class="project-status status-oss">OPEN SOURCE</span>
+        </div>
+        <div class="project-desc">Middleware-driven navigation control system for Vue Router 4 &amp; 5. Outpost architecture, verdict API, TypeScript, Vue DevTools. By Dmytro Symonov.</div>
+      </div>
+      <div class="project-right">
+        <div class="project-tech">
+          <span class="tag purple">Vue Router</span>
+          <span class="tag purple">TypeScript</span>
+          <span class="tag purple">npm</span>
+        </div>
+        <div class="project-arrow">→</div>
+      </div>
+    </div>
+
+    <div class="project-row">
+      <div>
+        <div class="project-meta">
+          <span class="project-name">bazargram</span>
+          <span class="project-status status-beta">BETA</span>
+        </div>
+        <div class="project-desc">Telegram-first e-commerce platform. Mini App storefront + Laravel backend. Deployed on OVH with Traefik + Cloudflare SSL.</div>
+      </div>
+      <div class="project-right">
+        <div class="project-tech">
+          <span class="tag green">TMA</span>
+          <span class="tag green">Laravel</span>
+          <span class="tag green">Telegram</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-row">
+      <div>
+        <div class="project-meta">
+          <span class="project-name">Flavor</span>
+          <span class="project-status status-wip">WIP</span>
+        </div>
+        <div class="project-desc">WordPress translation plugin. Single-table architecture, OpenAI integration, WPML migration support.</div>
+      </div>
+      <div class="project-right">
+        <div class="project-tech">
+          <span class="tag">WordPress</span>
+          <span class="tag">OpenAI</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-row">
+      <div>
+        <div class="project-meta">
+          <span class="project-name">FlashFilter</span>
+          <span class="project-status status-wip">WIP</span>
+        </div>
+        <div class="project-desc">High-performance Vue.js filtering plugin for WordPress. Freemium model via WordPress.org + Freemius.</div>
+      </div>
+      <div class="project-right">
+        <div class="project-tech">
+          <span class="tag purple">Vue 3</span>
+          <span class="tag purple">WordPress</span>
+          <span class="tag purple">Freemius</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="plugins">
+  <div class="section-header fade-in">
+    <div class="section-title">WordPress Plugins</div>
+    <div class="section-label">On WordPress.org</div>
+  </div>
+  <div class="plugin-highlight fade-in">
+    <a href="https://plugins.symonov.com/mailtrap" class="plugin-card">
+      <div class="plugin-card-tag">Mailer</div>
+      <div class="plugin-card-name">Symonov Mailer<br>for Mailtrap</div>
+      <div class="plugin-card-desc">Routes wp_mail() through the Mailtrap Send API. Zero dependencies, no SDK. Dual stream routing, dashboard stats, email logging.</div>
+      <div class="plugin-card-link">View plugin <span>→</span></div>
+    </a>
+    <a href="https://wordpress.org/plugins/validation-muse-for-contact-form-7/" class="plugin-card">
+      <div class="plugin-card-tag">CF7 Extension</div>
+      <div class="plugin-card-name">Validation Muse<br>for CF7</div>
+      <div class="plugin-card-desc">Custom validation messages for Contact Form 7. Multilingual, CF7 6.x SWV compatible. Full translation support via Flavor bridge.</div>
+      <div class="plugin-card-link">WordPress.org <span>→</span></div>
+    </a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="about">
+  <div class="section-header fade-in">
+    <div class="section-title">About</div>
+    <div class="section-label">Who we are</div>
+  </div>
+  <div class="about-grid fade-in">
+    <div class="about-text">
+      <p>We are <strong>Serhii and Dmytro Symonov</strong> — two brothers from <strong>Donbas, Ukraine</strong>, working as independent full-stack developers under the Symonov brand.</p>
+      <p>Our focus is on <strong>WordPress ecosystems, Laravel platforms, and Telegram-native applications</strong>. We build things that are fast, maintainable, and actually deployed — not just prototyped.</p>
+      <p>We contribute to the WordPress community as <strong>Plugin Developers</strong> and <strong>Translation Editors</strong> for Ukrainian and Russian locales on WordPress.org.</p>
+    </div>
+    <div class="about-aside">
+      <div class="aside-row">
+        <span class="aside-key">Primary IDE</span>
+        <span class="aside-val">PhpStorm</span>
+      </div>
+      <div class="aside-row">
+        <span class="aside-key">WP.org role</span>
+        <span class="aside-val accent">Plugin Developer</span>
+      </div>
+      <div class="aside-row">
+        <span class="aside-key">Translation Editor</span>
+        <span class="aside-val">uk / ru locales</span>
+      </div>
+      <div class="aside-row">
+        <span class="aside-key">Infra</span>
+        <span class="aside-val">Docker + OVH VPS</span>
+      </div>
+      <div class="aside-row">
+        <span class="aside-key">Status</span>
+        <span class="aside-val green">Available for projects</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <div class="section-header fade-in">
+    <div class="section-title">Contact</div>
+    <div class="section-label">Let's talk</div>
+  </div>
+  <div class="contact-block fade-in">
+    <div class="contact-card">
+      <div>
+        <div class="contact-label">Email</div>
+        <a href="mailto:hi@symonov.com" class="contact-value">hi@symonov.com</a>
+      </div>
+      <div class="contact-sub">For project inquiries and collaborations</div>
+    </div>
+    <div class="contact-card">
+      <div>
+        <div class="contact-label">WordPress.org</div>
+        <a href="https://profiles.wordpress.org/simmotorlp/" class="contact-value" target="_blank">@simmotorlp</a>
+      </div>
+      <div class="contact-sub">Plugin developer profile</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-copy">© 2026 Symonov. Built in Ukraine.</div>
+  <div class="footer-links">
+    <a href="https://github.com/symonovserhii" target="_blank">GitHub Serhii</a>
+    <a href="https://github.com/Kassaila" target="_blank">GitHub Dmytro</a>
+    <a href="https://plugins.symonov.com">Plugins</a>
+    <a href="mailto:hi@symonov.com">Email</a>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
 </html>
